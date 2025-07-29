@@ -1,0 +1,23 @@
+{
+  "name": "pixel-farm-story",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "generate-favicons": "node generate-favicons.js",
+    "prebuild": "npm run generate-favicons",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "sharp": "^0.34.3",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0"
+  }
+}
