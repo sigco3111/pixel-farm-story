@@ -184,7 +184,7 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
       const { x, y, activeTool, selectedItem } = action.payload;
       const tile = state.grid[y][x];
       
-      let tempState = { ...state };
+      let tempState = { ...state, stats: {...state.stats}, inventory: {...state.inventory} };
       const newGrid = state.grid.map(r => r.map(c => ({...c})));
       tempState.grid = newGrid;
       let logMessage: string | null = null;
@@ -211,19 +211,25 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
         }
         case 'HARVEST': {
           let harvested = false;
+          const hasWarehouse = tempState.grid.flat().some(tile => tile.buildId === 'warehouse');
+
           if (tile.type === 'PLANTED' && tile.growth >= 100 && tile.cropId) {
             harvested = true;
             const crop = CROPS[tile.cropId];
             if (crop) {
               const newTotalHarvested = state.stats.totalHarvested + 1;
-              tempState.inventory = { ...state.inventory, [tile.cropId]: (state.inventory[tile.cropId] || 0) + 1 };
-              tempState.stats = {
-                ...state.stats,
-                totalHarvested: newTotalHarvested,
-                harvestedItems: { ...state.stats.harvestedItems, [tile.cropId]: (state.stats.harvestedItems[tile.cropId] || 0) + 1 }
-              };
+              tempState.stats.totalHarvested = newTotalHarvested;
+              tempState.stats.harvestedItems = { ...state.stats.harvestedItems, [tile.cropId]: (state.stats.harvestedItems[tile.cropId] || 0) + 1 };
               newGrid[y][x] = { ...newGrid[y][x], type: 'SOIL' as const, cropId: null, growth: 0 };
-              logMessage = `📦 ${crop.name} 1개를 수확하여 창고에 보관했습니다.`;
+              
+              if(hasWarehouse) {
+                 tempState.inventory[tile.cropId] = (tempState.inventory[tile.cropId] || 0) + 1;
+                 logMessage = `📦 ${crop.name} 1개를 수확하여 창고에 보관했습니다.`;
+              } else {
+                 tempState.money += crop.sellPrice;
+                 tempState.stats.totalEarned = (tempState.stats.totalEarned || 0) + crop.sellPrice;
+                 logMessage = `💰 ${crop.name} 1개를 수확하여 ${crop.sellPrice}G에 즉시 판매했습니다.`;
+              }
 
               if (newTotalHarvested > 0 && newTotalHarvested % 5 === 0) {
                 tempState.researchPoints += 1;
@@ -236,9 +242,16 @@ export const gameReducer = (state: GameState, action: Action): GameState => {
              const animal = ANIMALS[tile.animalId];
              const produce = PRODUCE[animal.produceId];
              if (animal && produce) {
-                tempState.inventory = { ...state.inventory, [produce.id]: (state.inventory[produce.id] || 0) + 1 };
                 newGrid[y][x].produceProgress = 0;
-                logMessage = `📦 ${animal.name}에게서 ${produce.name} 1개를 얻어 창고에 보관했습니다.`;
+                
+                if (hasWarehouse) {
+                    tempState.inventory[produce.id] = (tempState.inventory[produce.id] || 0) + 1;
+                    logMessage = `📦 ${animal.name}에게서 ${produce.name} 1개를 얻어 창고에 보관했습니다.`;
+                } else {
+                    tempState.money += produce.sellPrice;
+                    tempState.stats.totalEarned = (tempState.stats.totalEarned || 0) + produce.sellPrice;
+                    logMessage = `💰 ${animal.name}에게서 얻은 ${produce.name}을(를) ${produce.sellPrice}G에 즉시 판매했습니다.`;
+                }
              }
           }
           if (!harvested) {
