@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { TileData } from '../types';
 import { CROPS, BUILD_ITEMS, ANIMALS, PRODUCE } from '../constants';
@@ -14,7 +13,7 @@ const Tile: React.FC<TileProps> = ({ tile, onMouseDown, onMouseEnter }) => {
   const crop = tile.cropId ? CROPS[tile.cropId] : null;
   const animal = tile.animalId ? ANIMALS[tile.animalId] : null;
 
-  let baseBg = 'bg-yellow-700 hover:bg-yellow-600';
+  let baseBg = 'soil-bg';
   let buildContent = null;
   let cropContent = null;
   let animalContent = null;

@@ -30,6 +30,24 @@
       ::-webkit-scrollbar-thumb:hover {
         background-color: rgba(255, 255, 255, 0.8);
       }
+      .soil-bg {
+        background-color: #6B4F35; /* Dark furrow color */
+        background-image: 
+            /* Noise on top */
+            radial-gradient(circle, #816244 1px, transparent 1px),
+            radial-gradient(circle, #5a442d 1px, transparent 1px),
+            /* The furrows */
+            linear-gradient(0deg, #8B5A2B 70%, #6B4F35 70%);
+        background-size: 8px 8px, 8px 8px, 100% 10px;
+        background-position: 0 0, 4px 4px, 0 0;
+        image-rendering: pixelated;
+        image-rendering: -moz-crisp-edges;
+        image-rendering: crisp-edges;
+        transition: filter 0.2s ease-in-out;
+      }
+      .soil-bg:hover {
+          filter: brightness(1.15);
+      }
       @keyframes bob-and-glow {
         0%, 100% {
           transform: translateY(0) scale(1.25);
