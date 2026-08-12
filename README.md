@@ -3,7 +3,7 @@
 
 카이로소프트 스타일의 농장 경영 시뮬레이션 게임입니다. 작물을 심고, 동물을 키우고, 목표를 달성하며 당신만의 꿈의 농장을 한 단계씩 만들어나가세요!
 
-실행주소1 : https://pixel-farm-story.vercel.app/
+실행주소1 : https://sigco3111.github.io/pixel-farm-story/
 
 실행주소2 : https://dev-canvas-pi.vercel.app/
 
